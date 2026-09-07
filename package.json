@@ -1,0 +1,53 @@
+{
+  "name": "shipboard",
+  "version": "0.1.0",
+  "description": "Cross-project pipeline tracker: branch \u2192 review \u2192 merge \u2192 deploy \u2192 test, derived from GitHub.",
+  "type": "module",
+  "bin": {
+    "shipboard": "./dist/cli.js",
+    "shipboard-mcp": "./dist/mcp.js",
+    "shipboard-hook": "./dist/hook.js"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "examples",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "AGENTS.md",
+    "CLAUDE.md"
+  ],
+  "scripts": {
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "dev": "tsx src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json",
+    "test": "vitest run",
+    "prepare": "npm run build",
+    "clean": "node --input-type=module -e \"import { rmSync } from 'node:fs'; rmSync('dist', { recursive: true, force: true });\""
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "better-sqlite3": "^13.0.3",
+    "commander": "^15.0.0",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^26.4.1",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CharlieHorton/shipboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CharlieHorton/shipboard/issues"
+  },
+  "homepage": "https://github.com/CharlieHorton/shipboard#readme"
+}

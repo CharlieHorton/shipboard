@@ -1,0 +1,645 @@
+{
+  "data": {
+    "repository": {
+      "pullRequests": {
+        "nodes": [
+          {
+            "number": 307,
+            "title": "Synthetic change 307",
+            "isDraft": false,
+            "state": "OPEN",
+            "baseRefName": "main",
+            "headRefName": "develop",
+            "headRefOid": "synthetic-head-307",
+            "mergedAt": null,
+            "url": "https://github.com/example/API/pull/307",
+            "author": {
+              "login": "example",
+              "__typename": "User"
+            },
+            "mergeCommit": null,
+            "reviews": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-307-review-0"
+                  }
+                },
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-307-review-1"
+                  }
+                },
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-307-review-2"
+                  }
+                },
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-307-review-3"
+                  }
+                }
+              ]
+            },
+            "reviewThreads": {
+              "nodes": [
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "oid": "synthetic-head-307",
+                    "statusCheckRollup": {
+                      "state": "SUCCESS"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "number": 205,
+            "title": "Synthetic change 205",
+            "isDraft": false,
+            "state": "OPEN",
+            "baseRefName": "develop",
+            "headRefName": "feature/example-205",
+            "headRefOid": "synthetic-head-205",
+            "mergedAt": null,
+            "url": "https://github.com/example/API/pull/205",
+            "author": {
+              "login": "example",
+              "__typename": "User"
+            },
+            "mergeCommit": null,
+            "reviews": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-205-review-0"
+                  }
+                },
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-205-review-1"
+                  }
+                },
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-205-review-2"
+                  }
+                },
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-205-review-3"
+                  }
+                },
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-205-review-4"
+                  }
+                },
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-205-review-5"
+                  }
+                },
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-head-205"
+                  }
+                },
+                {
+                  "author": {
+                    "login": "qodo-code-review",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-205-review-0"
+                  }
+                }
+              ]
+            },
+            "reviewThreads": {
+              "nodes": [
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": true,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "coderabbitai"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": true,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "qodo-code-review"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "oid": "synthetic-head-205",
+                    "statusCheckRollup": {
+                      "state": "SUCCESS"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "number": 244,
+            "title": "Synthetic change 244",
+            "isDraft": false,
+            "state": "OPEN",
+            "baseRefName": "develop",
+            "headRefName": "feature/example-244",
+            "headRefOid": "synthetic-head-244",
+            "mergedAt": null,
+            "url": "https://github.com/example/API/pull/244",
+            "author": {
+              "login": "example",
+              "__typename": "User"
+            },
+            "mergeCommit": null,
+            "reviews": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "coderabbitai",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-head-244"
+                  }
+                }
+              ]
+            },
+            "reviewThreads": {
+              "nodes": []
+            },
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "oid": "synthetic-head-244",
+                    "statusCheckRollup": {
+                      "state": "SUCCESS"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "number": 88,
+            "title": "Synthetic change 88",
+            "isDraft": false,
+            "state": "OPEN",
+            "baseRefName": "develop",
+            "headRefName": "feature/example-88",
+            "headRefOid": "synthetic-head-88",
+            "mergedAt": null,
+            "url": "https://github.com/example/API/pull/88",
+            "author": {
+              "login": "example",
+              "__typename": "User"
+            },
+            "mergeCommit": null,
+            "reviews": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "chatgpt-codex-connector",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-head-88"
+                  }
+                },
+                {
+                  "author": {
+                    "login": "greptile-apps",
+                    "__typename": "Bot"
+                  },
+                  "commit": {
+                    "oid": "synthetic-head-88"
+                  }
+                }
+              ]
+            },
+            "reviewThreads": {
+              "nodes": [
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "chatgpt-codex-connector"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "chatgpt-codex-connector"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "isResolved": false,
+                  "isOutdated": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "author": {
+                          "login": "chatgpt-codex-connector"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "oid": "synthetic-head-88",
+                    "statusCheckRollup": null
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "number": 143,
+            "title": "Synthetic change 143",
+            "isDraft": true,
+            "state": "OPEN",
+            "baseRefName": "develop",
+            "headRefName": "feature/example-143",
+            "headRefOid": "synthetic-head-143",
+            "mergedAt": null,
+            "url": "https://github.com/example/API/pull/143",
+            "author": {
+              "login": "example",
+              "__typename": "User"
+            },
+            "mergeCommit": null,
+            "reviews": {
+              "nodes": []
+            },
+            "reviewThreads": {
+              "nodes": []
+            },
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "oid": "synthetic-head-143",
+                    "statusCheckRollup": {
+                      "state": "SUCCESS"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "gating_bots": ["coderabbitai", "qodo-code-review"],
+  "ignored_authors": ["dependabot"],
+  "projects": [
+    {
+      "name": "my-project",
+      "repos": [
+        {
+          "owner": "your-org",
+          "name": "your-repo",
+          "dev_branch": "develop",
+          "prod_branch": "main",
+          "deploy": "manual"
+        }
+      ]
+    }
+  ]
+}
