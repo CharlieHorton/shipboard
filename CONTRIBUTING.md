@@ -41,6 +41,8 @@ configured local repositories.
 - Keep I/O injectable. Add meaningful coverage for changed behavior using
   synthetic data; never commit captured private repository responses or tokens.
 - Update usage/configuration docs when changing the public interface.
+- Add a line under `Unreleased` in [CHANGELOG.md](CHANGELOG.md) for changes
+  users would notice; internal refactors and test-only work need no entry.
 - Run type checking, tests, and the build before submitting. Include the problem,
   resulting behavior, and validation in the PR description.
 
@@ -51,7 +53,7 @@ projects.
 ## Checking a release candidate
 
 Run `npm pack --dry-run` to inspect the package file list. It should contain the
-built entry points and runtime modules, public docs/examples, README, package
+built entry points and runtime modules, public docs/examples, README, changelog, package
 metadata, and license; exclude fixtures, tests, and local data. No npm release
 or automatic publishing is configured.
 

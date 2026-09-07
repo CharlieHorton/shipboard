@@ -74,14 +74,14 @@ describe("items", () => {
   it("creates with json columns round-tripping", () => {
     const item = createItem(db, {
       project: "example",
-      title: "Stripe Connect agents",
-      summary: "Let agents onboard to Connect",
-      changes: ["adds /connect", "flag stripe_connect"],
-      linear_key: "PS-101",
+      title: "Shared saved searches",
+      summary: "Let agents onboard to saved searches",
+      changes: ["adds /searches", "flag saved_search"],
+      linear_key: "ENG-101",
       repo_order: [API, WEB],
     });
     expect(item.id).toBe(1);
-    expect(parseJsonArray(item.changes)).toEqual(["adds /connect", "flag stripe_connect"]);
+    expect(parseJsonArray(item.changes)).toEqual(["adds /searches", "flag saved_search"]);
     expect(parseJsonArray(item.repo_order)).toEqual([API, WEB]);
     expect(getItem(db, item.id)).toEqual(item);
   });
@@ -99,9 +99,9 @@ describe("items", () => {
     db.prepare(`UPDATE items SET updated_at = '2020-01-01T00:00:00.000Z' WHERE id = ?`).run(item.id);
     const before = getItem(db, item.id)!;
 
-    const after = updateItem(db, item.id, { title: "New", blocked_reason: "waiting on Stripe" });
+    const after = updateItem(db, item.id, { title: "New", blocked_reason: "waiting on design review" });
     expect(after.title).toBe("New");
-    expect(after.blocked_reason).toBe("waiting on Stripe");
+    expect(after.blocked_reason).toBe("waiting on design review");
     expect(after.summary).toBe("keep me");
     expect(Date.parse(after.updated_at)).toBeGreaterThan(Date.parse(before.updated_at));
     expect(after.created_at).toBe(before.created_at);
@@ -143,27 +143,27 @@ describe("prs", () => {
   });
 
   it("findPrByBranch prefers the open PR", () => {
-    insertPr({ repo: API, number: 100, head_branch: "feature/chinese", state: "MERGED" });
-    insertPr({ repo: API, number: 237, head_branch: "feature/chinese", state: "OPEN" });
-    expect(findPrByBranch(db, API, "feature/chinese")?.number).toBe(237);
+    insertPr({ repo: API, number: 100, head_branch: "feature/dark-mode", state: "MERGED" });
+    insertPr({ repo: API, number: 237, head_branch: "feature/dark-mode", state: "OPEN" });
+    expect(findPrByBranch(db, API, "feature/dark-mode")?.number).toBe(237);
   });
 
   it("findPrByBranch falls back to the most recently synced", () => {
     insertPr({
       repo: API,
       number: 100,
-      head_branch: "feature/chinese",
+      head_branch: "feature/dark-mode",
       state: "MERGED",
       synced_at: "2026-09-01T00:00:00.000Z",
     });
     insertPr({
       repo: API,
       number: 120,
-      head_branch: "feature/chinese",
+      head_branch: "feature/dark-mode",
       state: "CLOSED",
       synced_at: "2026-09-02T00:00:00.000Z",
     });
-    expect(findPrByBranch(db, API, "feature/chinese")?.number).toBe(120);
+    expect(findPrByBranch(db, API, "feature/dark-mode")?.number).toBe(120);
     expect(findPrByBranch(db, API, "feature/nope")).toBeUndefined();
   });
 
@@ -220,7 +220,7 @@ describe("tasks", () => {
   it("adds, lists and completes", () => {
     const item = createItem(db, { project: "example", title: "T" });
     const testTask = addTask(db, item.id, "test", "smoke on dev");
-    const flag = addTask(db, item.id, "flag", "flip stripe_connect");
+    const flag = addTask(db, item.id, "flag", "flip saved_search");
 
     expect(tasksForItem(db, item.id).map((t) => t.kind)).toEqual(["test", "flag"]);
     expect(testTask.done_at).toBeNull();

@@ -22,10 +22,10 @@ function mkPr(p: Partial<PrRow> = {}): PrRow {
     item_id: 12,
     repo: API,
     number: 205,
-    title: "Add Stripe Connect",
+    title: "Add saved searches",
     author: "example",
     url: "https://github.com/example/API/pull/205",
-    head_branch: "feature/stripe-connect",
+    head_branch: "feature/saved-search",
     base_branch: "develop",
     head_sha: "aaaaaaa",
     state: "OPEN",
@@ -50,10 +50,10 @@ function mkItem(p: Partial<ItemRow> = {}): ItemRow {
   return {
     id: 12,
     project: "example",
-    title: "Stripe Connect agents",
-    summary: "Let agents onboard to Stripe Connect.",
+    title: "Shared saved searches",
+    summary: "Let agents onboard to saved searches.",
     changes: JSON.stringify(["Add onboarding endpoint"]),
-    linear_key: "PROP-42",
+    linear_key: "ENG-42",
     silo: null,
     repo_order: null,
     stage_override: null,
@@ -130,20 +130,20 @@ describe("renderPage", () => {
     expect(html).toContain('<html lang="en">');
     expect(html).toContain("<title>Shipboard</title>");
     expect(html).toContain("#12");
-    expect(html).toContain("Stripe Connect agents");
+    expect(html).toContain("Shared saved searches");
   });
 
   it("puts agent-actionable items under 'Agent can act' and human ones under 'Needs you'", () => {
     const agent = mkView("needs-addressing", { actor: "agent" });
     const human = mkView("ready-to-merge", {
       actor: "human",
-      item: mkItem({ id: 13, title: "Chinese translations" }),
+      item: mkItem({ id: 13, title: "Dark mode preference" }),
       prs: [{ pr: mkPr({ id: 2, number: 237 }), stage: "ready-to-merge" }],
     });
     const html = page({ items: [agent, human] });
-    expect(group(html, "Agent can act")).toContain("Stripe Connect agents");
-    expect(group(html, "Agent can act")).not.toContain("Chinese translations");
-    expect(group(html, "Needs you")).toContain("Chinese translations");
+    expect(group(html, "Agent can act")).toContain("Shared saved searches");
+    expect(group(html, "Agent can act")).not.toContain("Dark mode preference");
+    expect(group(html, "Needs you")).toContain("Dark mode preference");
   });
 
   it("lists untracked PRs needing action, and nothing else", () => {
@@ -173,11 +173,11 @@ describe("renderPage", () => {
   it("shows blocked items with a red blocked badge", () => {
     const blocked = mkView("blocked", {
       actor: "human",
-      item: mkItem({ blocked_reason: "waiting on Stripe support" }),
+      item: mkItem({ blocked_reason: "waiting on design review" }),
     });
     const html = page({ items: [blocked] });
     expect(html).toContain('<span class="badge s-blocked">blocked</span>');
-    expect(html).toContain("waiting on Stripe support");
+    expect(html).toContain("waiting on design review");
   });
 
   it("shows unresolved thread counts and merge-order warnings", () => {
@@ -247,7 +247,7 @@ describe("KANBAN_COLUMNS", () => {
 describe("renderDrawer", () => {
   const tasks: TaskRow[] = [
     { id: 1, item_id: 12, kind: "test", text: "test on dev", created_at: "2026-09-01T00:00:00.000Z", done_at: "2026-09-02T00:00:00.000Z" },
-    { id: 2, item_id: 12, kind: "flag", text: "flip stripe_connect flag", created_at: "2026-09-01T00:00:00.000Z", done_at: null },
+    { id: 2, item_id: 12, kind: "flag", text: "flip saved_search flag", created_at: "2026-09-01T00:00:00.000Z", done_at: null },
   ];
   const events: EventRow[] = [
     { id: 1, item_id: 12, at: "2026-09-01T00:00:00.000Z", source: "sync", text: "older event" },
@@ -257,8 +257,8 @@ describe("renderDrawer", () => {
   it("renders the header, meta and changes", () => {
     const html = renderDrawer(mkView("needs-addressing", { actor: "agent" }), [], []);
     expect(html).toContain("#12");
-    expect(html).toContain("Stripe Connect agents");
-    expect(html).toContain("PROP-42");
+    expect(html).toContain("Shared saved searches");
+    expect(html).toContain("ENG-42");
     expect(html).toContain("Add onboarding endpoint");
     expect(html).toContain("API#205");
   });
@@ -317,18 +317,18 @@ describe("escapeHtml", () => {
 
 describe("Linear links", () => {
   const WS = "example";
-  const URL = "https://linear.app/example/issue/PROP-42";
+  const URL = "https://linear.app/example/issue/ENG-42";
 
   it("links the drawer's Linear key when a workspace is configured", () => {
     const html = renderDrawer(mkView("needs-addressing", { actor: "agent" }), [], [], {
       linearWorkspace: WS,
     });
-    expect(html).toContain(`<a href="${URL}" target="_blank" rel="noreferrer">PROP-42</a>`);
+    expect(html).toContain(`<a href="${URL}" target="_blank" rel="noreferrer">ENG-42</a>`);
   });
 
   it("leaves the key as plain text without a workspace", () => {
     const html = renderDrawer(mkView("needs-addressing", { actor: "agent" }), [], []);
-    expect(html).toContain("PROP-42");
+    expect(html).toContain("ENG-42");
     expect(html).not.toContain("linear.app");
   });
 
@@ -339,13 +339,13 @@ describe("Linear links", () => {
     expect(linked.split(`<a class="chip" href="${URL}"`).length - 1).toBe(2);
 
     const plain = page({ items: [v] });
-    expect(plain).toContain('<span class="chip">PROP-42</span>');
+    expect(plain).toContain('<span class="chip">ENG-42</span>');
     expect(plain).not.toContain("linear.app");
   });
 
   it("omits the chip for an item with no Linear key", () => {
     const v = mkView("needs-addressing", { actor: "agent", item: mkItem({ linear_key: null }) });
-    expect(page({ items: [v] }, { linearWorkspace: WS })).not.toContain("PROP-42");
+    expect(page({ items: [v] }, { linearWorkspace: WS })).not.toContain("ENG-42");
   });
 
   it("escapes a hostile key in both the href and the text", () => {
@@ -393,7 +393,7 @@ describe("worktrees", () => {
     expect(KANBAN_COLUMNS[0]?.title).toBe("Local");
     // The Local column is the one holding the card.
     const local = html.slice(html.indexOf("<h3>Local</h3>"), html.indexOf("<h3>Drafting</h3>"));
-    expect(local).toContain("Stripe Connect agents");
+    expect(local).toContain("Shared saved searches");
   });
 
   it("lists a card's PR-less worktrees under its PRs", () => {
@@ -425,9 +425,9 @@ describe("worktrees", () => {
         untracked: [
           mkWtView("local-only"),
           mkWtView("local-only", {
-            path: "/Users/x/Projects/example-features/agent-analytics/API",
-            branch: "feature/analytics",
-            silo: "agent-analytics",
+            path: "/Users/x/Projects/example-features/usage-reports/API",
+            branch: "feature/usage-reports",
+            silo: "usage-reports",
             unpushed: 1,
             last_commit_at: new Date(Date.now() - 3 * 24 * 3600_000).toISOString(),
           }),
@@ -439,7 +439,7 @@ describe("worktrees", () => {
     expect(forgotten).toContain('<span class="silo">sample-feature</span>');
     expect(forgotten).toContain("API ⎇ feature/sample-feature");
     expect(forgotten).toContain("· 2 unpushed · 1d ago");
-    expect(forgotten).toContain('<span class="silo">agent-analytics</span>');
+    expect(forgotten).toContain('<span class="silo">usage-reports</span>');
     expect(forgotten).toContain("· 1 unpushed · 3d ago");
     // Nothing to open: these rows are not clickable, and the hint says what to do.
     expect(forgotten).not.toContain("data-item");
@@ -471,9 +471,9 @@ describe("worktrees", () => {
           mkWtView(
             "merged",
             {
-              path: "/Users/x/Projects/example-features/crm-signup-link/API",
-              branch: "feature/crm-signup-link",
-              silo: "crm-signup-link",
+              path: "/Users/x/Projects/example-features/share-links/API",
+              branch: "feature/share-links",
+              silo: "share-links",
               ahead_of_dev: 0,
               unpushed: 0,
               on_origin: 1,
@@ -486,10 +486,10 @@ describe("worktrees", () => {
     expect(html).toContain("Worktrees to clean up");
     expect(html).toContain("merged (PR #303)");
     expect(html).toContain(
-      "<code>git -C &#39;/Users/x/Projects/main/API&#39; worktree remove -- &#39;/Users/x/Projects/example-features/crm-signup-link/API&#39;</code>",
+      "<code>git -C &#39;/Users/x/Projects/main/API&#39; worktree remove -- &#39;/Users/x/Projects/example-features/share-links/API&#39;</code>",
     );
     expect(html).toContain("Remove worktree</button>");
-    expect(html).toContain('data-worktree-remove="/Users/x/Projects/example-features/crm-signup-link/API"');
+    expect(html).toContain('data-worktree-remove="/Users/x/Projects/example-features/share-links/API"');
   });
 
   it("shows unavailable local observations without negative counts", () => {

@@ -52,9 +52,9 @@ describe("parseGithubRemote", () => {
       owner: "example",
       name: "web",
     });
-    expect(parseGithubRemote("  https://token@github.com/example/tenants.git\n")).toEqual({
+    expect(parseGithubRemote("  https://token@github.com/example/mobile.git\n")).toEqual({
       owner: "example",
-      name: "tenants",
+      name: "mobile",
     });
   });
 

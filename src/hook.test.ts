@@ -179,7 +179,7 @@ describe("runHook", () => {
   it("names the item, its stage and the merge-order warning for a linked PR", async () => {
     const item = store.createItem(db, {
       project: "example",
-      title: "Stripe Connect for agent companies",
+      title: "Saved searches for team workspaces",
       repo_order: [API_KEY, WEB_KEY],
     });
     insertPr(db, {
@@ -205,7 +205,7 @@ describe("runHook", () => {
 
     expect(sync).toHaveBeenCalledWith([API_KEY]);
     expect(context(out)).toBe(
-      `Shipboard: item #${item.id} "Stripe Connect for agent companies" is now needs-addressing ` +
+      `Shipboard: item #${item.id} "Saved searches for team workspaces" is now needs-addressing ` +
         `(API#205 round 3, 4 unresolved bot threads, CI ✓).\n` +
         "  ! web#284 is ready to merge but API#205 must merge first\n" +
         "  → agent should address the threads",
@@ -280,7 +280,7 @@ describe("runHook", () => {
   });
 
   it("appends the first sync error and up to three other notable changes", async () => {
-    const item = store.createItem(db, { project: "example", title: "Stripe Connect" });
+    const item = store.createItem(db, { project: "example", title: "Saved searches" });
     insertPr(db, {
       repo: API_KEY,
       number: 205,
@@ -305,7 +305,7 @@ describe("runHook", () => {
     const lines = context(await runHook(event("git push"), deps)).split("\n");
 
     expect(lines[0]).toBe(
-      `Shipboard: item #${item.id} "Stripe Connect" is now ready-to-merge (API#205 round 1, CI ✓).`,
+      `Shipboard: item #${item.id} "Saved searches" is now ready-to-merge (API#205 round 1, CI ✓).`,
     );
     expect(lines).toContain("  also: API#268 review round 3 landed, 2 unresolved");
     expect(lines).toContain("  (sync: compare develop...abc1234: gh api: rate limited)");
@@ -346,15 +346,15 @@ describe("runHook — SessionStart", () => {
   });
 
   it("digests the project's attention queue, agent group first, and never syncs", async () => {
-    const stripe = store.createItem(db, {
+    const search = store.createItem(db, {
       project: "example",
-      title: "Stripe Connect for agent companies",
+      title: "Saved searches for team workspaces",
       repo_order: [API_KEY, WEB_KEY],
     });
     insertPr(db, {
       repo: API_KEY,
       number: 205,
-      item_id: stripe.id,
+      item_id: search.id,
       review_round: 3,
       unresolved_bot_threads: 4,
       bot_reviews_on_head: 1,
@@ -364,7 +364,7 @@ describe("runHook — SessionStart", () => {
     insertPr(db, {
       repo: WEB_KEY,
       number: 284,
-      item_id: stripe.id,
+      item_id: search.id,
       head_branch: "feature/x-web",
       review_round: 1,
       bot_reviews_on_head: 1,
@@ -372,12 +372,12 @@ describe("runHook — SessionStart", () => {
       synced_at: SYNCED_12M,
     });
 
-    const chinese = store.createItem(db, { project: "example", title: "Chinese translations" });
+    const darkMode = store.createItem(db, { project: "example", title: "Dark mode preference" });
     insertPr(db, {
       repo: API_KEY,
       number: 237,
-      item_id: chinese.id,
-      head_branch: "feature/chinese",
+      item_id: darkMode.id,
+      head_branch: "feature/dark-mode",
       review_round: 1,
       bot_reviews_on_head: 1,
       ci_state: "SUCCESS",
@@ -402,9 +402,9 @@ describe("runHook — SessionStart", () => {
       [
         "Shipboard (example): 3 items need attention — run shipboard_list {attention:true} for detail." +
           " (synced 12m ago)",
-        `  #${stripe.id} needs-addressing  Stripe Connect for agent companies  API#205 (4 threads)`,
+        `  #${search.id} needs-addressing  Saved searches for team workspaces  API#205 (4 threads)`,
         "    ! web#284 is ready to merge but API#205 must merge first",
-        `  #${chinese.id} ready-to-merge    Chinese translations                API#237`,
+        `  #${darkMode.id} ready-to-merge    Dark mode preference                API#237`,
         "  untracked: API#300 needs-addressing(3)",
       ].join("\n"),
     );
@@ -421,7 +421,7 @@ describe("runHook — SessionStart", () => {
   });
 
   it("says nothing for a cwd in no configured repo — that is how it stays opt-in", async () => {
-    const item = store.createItem(db, { project: "example", title: "Stripe Connect" });
+    const item = store.createItem(db, { project: "example", title: "Saved searches" });
     insertPr(db, {
       repo: API_KEY,
       number: 205,
@@ -602,9 +602,9 @@ describe("runHook — worktrees", () => {
       last_commit_at: daysAgo(1),
     });
     insertWorktree(db, {
-      path: "/w/agent-analytics/API",
-      branch: "feature/analytics",
-      silo: "agent-analytics",
+      path: "/w/usage-reports/API",
+      branch: "feature/usage-reports",
+      silo: "usage-reports",
       ahead_of_dev: 1,
       unpushed: 1,
       last_commit_at: daysAgo(3),
@@ -614,7 +614,7 @@ describe("runHook — worktrees", () => {
 
     expect(lines[0]).toContain("2 items need attention");
     expect(lines[1]).toBe(
-      "  forgotten: agent-analytics (API 1 unpushed, 3d ago) · sample-feature (API 2 unpushed, 1d ago)",
+      "  forgotten: usage-reports (API 1 unpushed, 3d ago) · sample-feature (API 2 unpushed, 1d ago)",
     );
   });
 

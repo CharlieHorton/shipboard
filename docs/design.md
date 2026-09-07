@@ -123,7 +123,7 @@ One TypeScript package, three entry points over the same SQLite store.
    `coderabbitai` and `qodo-code-review` only. Dev deploy state = reachability
    from `develop`. Prod deploy is asserted, not derived: `shipboard deployed
    <item> prod` or the `shipboard_set` MCP tool, since prod is a manual step.
-   For the tenant app, `eas update:list --json` maps OTA groups to commits.
+   For the mobile app, `eas update:list --json` maps OTA groups to commits.
 4. **Dashboard** — `shipboard serve` on localhost. Attention queue at the top,
    Kanban by item stage below, project filter, item drawer (summary, PRs with
    round/threads/CI badges, merge-order warning, tasks, event timeline).
@@ -202,7 +202,7 @@ Deviations from the design above, settled during implementation:
   threads that are neither resolved nor outdated.
 - **Review round** = distinct head SHAs reviewed by any gating bot (union, not
   per-bot).
-- **Tenant app** is configured with `dev_branch = prod_branch = main`, so its
+- **Mobile app** is configured with `dev_branch = prod_branch = main`, so its
   PRs go straight to `merged-main` and there is no release step.
 - Tooling: TypeScript (ESM, `tsc` → `dist/`), `better-sqlite3`, `commander`,
   `vitest`. Node 22.12+.

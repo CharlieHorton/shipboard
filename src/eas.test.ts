@@ -11,15 +11,15 @@ import {
 } from "./eas.js";
 import type { RepoConfig } from "./types.js";
 
-const TENANTS: RepoConfig = {
+const MOBILE: RepoConfig = {
   owner: "example",
-  name: "tenants",
+  name: "mobile",
   dev_branch: "main",
   prod_branch: "main",
   deploy: "manual",
-  eas: { cwd: "~/Projects/example/tenants", branch: "production" },
+  eas: { cwd: "~/Projects/example/mobile", branch: "production" },
 };
-const KEY = "example/tenants";
+const KEY = "example/mobile";
 
 /** A repo with no EAS config at all. */
 const API: RepoConfig = {
@@ -127,10 +127,10 @@ describe("syncOtaUpdates", () => {
     eas.add("g-new", { commitSha: "bfc4863e", createdAt: "2026-08-20T16:38:54.643Z" });
     eas.add("g-old", { commitSha: "aaa1111", createdAt: "2026-08-01T09:00:00.000Z" }, { platforms: "ios" });
 
-    const res = await syncOtaUpdates(db, TENANTS, eas);
+    const res = await syncOtaUpdates(db, MOBILE, eas);
     expect(res).toEqual({ seen: 2, added: 2, errors: [] });
     expect(eas.listCalls).toEqual([
-      { cwd: `${homedir()}/Projects/example/tenants`, branch: "production", limit: 20 },
+      { cwd: `${homedir()}/Projects/example/mobile`, branch: "production", limit: 20 },
     ]);
     expect(cached()).toEqual([
       {
@@ -157,11 +157,11 @@ describe("syncOtaUpdates", () => {
   it("never calls update:view twice for the same group", async () => {
     const eas = new FakeEas();
     eas.add("g1", { commitSha: "sha1" });
-    await syncOtaUpdates(db, TENANTS, eas);
+    await syncOtaUpdates(db, MOBILE, eas);
     expect(eas.viewCalls).toEqual(["g1"]);
 
     eas.add("g2", { commitSha: "sha2", createdAt: "2026-08-25T10:00:00.000Z" });
-    const res = await syncOtaUpdates(db, TENANTS, eas);
+    const res = await syncOtaUpdates(db, MOBILE, eas);
     expect(res).toEqual({ seen: 2, added: 1, errors: [] });
     expect(eas.viewCalls).toEqual(["g1", "g2"]); // g1 came from the cache
     expect(cached()).toHaveLength(2);
@@ -172,7 +172,7 @@ describe("syncOtaUpdates", () => {
     eas.add("g-rollback", { commitSha: "sha-rb" }, { isRollBackToEmbedded: true });
     eas.add("g-real", { commitSha: "sha-real" });
 
-    const res = await syncOtaUpdates(db, TENANTS, eas);
+    const res = await syncOtaUpdates(db, MOBILE, eas);
     expect(res).toMatchObject({ seen: 2, added: 1 });
     expect(eas.viewCalls).toEqual(["g-real"]);
     expect(cached().map((r) => r["group_id"])).toEqual(["g-real"]);
@@ -183,7 +183,7 @@ describe("syncOtaUpdates", () => {
     eas.groups.push(group({ group: "g-nocommit" })); // listed, but update:view returns undefined
     eas.add("g-ok", { commitSha: "sha-ok" });
 
-    const res = await syncOtaUpdates(db, TENANTS, eas);
+    const res = await syncOtaUpdates(db, MOBILE, eas);
     expect(res).toEqual({ seen: 2, added: 1, errors: [] });
     expect(cached().map((r) => r["group_id"])).toEqual(["g-ok"]);
   });
@@ -191,7 +191,7 @@ describe("syncOtaUpdates", () => {
   it("reports a failed listing without throwing", async () => {
     const eas = new FakeEas();
     eas.failList = "eas update:list: not logged in";
-    const res = await syncOtaUpdates(db, TENANTS, eas);
+    const res = await syncOtaUpdates(db, MOBILE, eas);
     expect(res).toEqual({ seen: 0, added: 0, errors: ["update:list production: eas update:list: not logged in"] });
     expect(cached()).toEqual([]);
   });
@@ -202,7 +202,7 @@ describe("syncOtaUpdates", () => {
     eas.add("g-fine", { commitSha: "sha-fine" });
     eas.failView.add("g-broken");
 
-    const res = await syncOtaUpdates(db, TENANTS, eas);
+    const res = await syncOtaUpdates(db, MOBILE, eas);
     expect(res).toMatchObject({ seen: 2, added: 1 });
     expect(res.errors).toEqual(["update:view g-broken: gh: request failed"]);
     expect(cached().map((r) => r["group_id"])).toEqual(["g-fine"]);
@@ -217,7 +217,7 @@ describe("otaUpdatesFor", () => {
     eas.add("g2", { commitSha: "sha2", createdAt: "2026-08-20T16:38:54.643Z" });
     eas.add("g1", { commitSha: "sha1", createdAt: "2026-08-01T09:00:00.000Z" });
     eas.add("g3", { commitSha: "sha3", createdAt: "2026-08-30T12:00:00.000Z" });
-    await syncOtaUpdates(db, TENANTS, eas);
+    await syncOtaUpdates(db, MOBILE, eas);
     // The "main" EAS branch also receives every push, but is not a prod deploy.
     db.prepare(
       `INSERT INTO ota_updates (group_id, repo, branch, commit_sha, created_at, message, platforms)

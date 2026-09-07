@@ -7,7 +7,7 @@ import type { ItemRow, PrRow, PrStage, TaskRow, WorktreeRow } from "./types.js";
 
 const API = "example/API"; // develop -> main
 const WEB = "example/web"; // develop -> main
-const TENANTS = "example/tenants"; // main -> main
+const MOBILE = "example/mobile"; // main -> main
 
 const cfg = TEST_CONFIG;
 const repoOf = (key: string) => findRepo(cfg, key);
@@ -19,10 +19,10 @@ function mkPr(p: Partial<PrRow> = {}): PrRow {
     item_id: null,
     repo: API,
     number: 205,
-    title: "Add Stripe Connect",
+    title: "Add saved searches",
     author: "example",
     url: "",
-    head_branch: "feature/stripe-connect",
+    head_branch: "feature/saved-search",
     base_branch: "develop",
     head_sha: "aaaaaaa",
     state: "OPEN",
@@ -47,7 +47,7 @@ function mkItem(p: Partial<ItemRow> = {}): ItemRow {
   return {
     id: 12,
     project: "example",
-    title: "Stripe Connect agents",
+    title: "Shared saved searches",
     summary: null,
     changes: null,
     linear_key: null,
@@ -66,11 +66,11 @@ function mkItem(p: Partial<ItemRow> = {}): ItemRow {
 /** Defaults produce a pushed silo worktree with no PR: `needs-pr`. */
 function mkWorktree(p: Partial<WorktreeRow> = {}): WorktreeRow {
   return {
-    path: "/Users/example/Projects/example-features/stripe-connect/API",
+    path: "/Users/example/Projects/example-features/saved-search/API",
     repo: API,
-    branch: "feature/stripe-connect",
+    branch: "feature/saved-search",
     head_sha: "bbbbbbb",
-    silo: "stripe-connect",
+    silo: "saved-search",
     is_main: 0,
     ahead_of_dev: 2,
     unpushed: 0,
@@ -111,8 +111,8 @@ describe("prStage", () => {
   });
 
   it("merged straight into the prod branch is merged-main", () => {
-    const pr = mkPr({ repo: TENANTS, ...mergedToDev, base_branch: "main" });
-    expect(prStage(pr, repoOf(TENANTS))).toBe("merged-main");
+    const pr = mkPr({ repo: MOBILE, ...mergedToDev, base_branch: "main" });
+    expect(prStage(pr, repoOf(MOBILE))).toBe("merged-main");
   });
 
   it("merged into a release PR is in-release", () => {
@@ -255,7 +255,7 @@ describe("prStageRank", () => {
 
 describe("itemStage", () => {
   it("1. blocked_reason wins over an override", () => {
-    const item = mkItem({ blocked_reason: "waiting on Stripe", stage_override: "done" });
+    const item = mkItem({ blocked_reason: "waiting on design review", stage_override: "done" });
     expect(itemStage(item, [mkPr()], [], cfg)).toBe("blocked");
   });
 
@@ -312,7 +312,7 @@ describe("itemStage", () => {
 
   it("7. an OTA deploy on every PR counts as the prod assertion", () => {
     const prs = [
-      mkPr({ id: 1, repo: TENANTS, base_branch: "main", ...mergedToDev, on_prod: 1, deployed_at: "2026-08-20T16:38:54.643Z", deploy_ref: "c34dac85" }),
+      mkPr({ id: 1, repo: MOBILE, base_branch: "main", ...mergedToDev, on_prod: 1, deployed_at: "2026-08-20T16:38:54.643Z", deploy_ref: "c34dac85" }),
     ];
     expect(itemStage(mkItem(), prs, [testDone(prs)], cfg)).toBe("done");
     expect(itemStage(mkItem(), prs, [], cfg)).toBe("needs-post-deploy");
@@ -320,7 +320,7 @@ describe("itemStage", () => {
 
   it("7. one PR shipped by OTA and one not is still needs-prod-deploy", () => {
     const prs = [
-      mkPr({ id: 1, repo: TENANTS, base_branch: "main", ...mergedToDev, on_prod: 1, deployed_at: "2026-08-20T16:38:54.643Z" }),
+      mkPr({ id: 1, repo: MOBILE, base_branch: "main", ...mergedToDev, on_prod: 1, deployed_at: "2026-08-20T16:38:54.643Z" }),
       mkPr({ id: 2, repo: API, number: 6, ...mergedToDev, on_prod: 1 }),
     ];
     expect(itemStage(mkItem(), prs, [testDone(prs)], cfg)).toBe("needs-prod-deploy");
@@ -352,7 +352,7 @@ describe("itemStage", () => {
   });
 
   it("8. a repo whose dev branch is its prod branch never needs a release", () => {
-    const prs = [mkPr({ repo: TENANTS, base_branch: "main", ...mergedToDev, on_prod: 1 })];
+    const prs = [mkPr({ repo: MOBILE, base_branch: "main", ...mergedToDev, on_prod: 1 })];
     expect(itemStage(mkItem(), prs, [testDone(prs)], cfg)).toBe("needs-prod-deploy");
   });
 
@@ -382,7 +382,7 @@ describe("itemStage with local worktrees", () => {
   });
 
   it("1-2. blocked and overrides still win", () => {
-    const blocked = mkItem({ blocked_reason: "waiting on Stripe" });
+    const blocked = mkItem({ blocked_reason: "waiting on design review" });
     expect(itemStage(blocked, [], [], cfg, [localOnly])).toBe("blocked");
     expect(itemStage(mkItem({ stage_override: "tested" }), [], [], cfg, [localOnly])).toBe("tested");
   });

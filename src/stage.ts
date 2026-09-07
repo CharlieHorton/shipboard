@@ -69,7 +69,7 @@ export function prStage(pr: PrRow, repo: RepoConfig | undefined): PrStage {
   if (pr.state === "CLOSED") return "closed";
   if (pr.state === "MERGED") {
     if (pr.on_prod) return "merged-main";
-    // Merged straight into the prod branch (e.g. tenants, where
+    // Merged straight into the prod branch (e.g. mobile, where
     // dev_branch === prod_branch === main): there is no release step.
     if (repo && pr.base_branch === repo.prod_branch) return "merged-main";
     if (pr.in_release_pr != null) return "in-release";

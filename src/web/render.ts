@@ -99,7 +99,7 @@ function issueUrl(key: string | null, ws: string | undefined): string | undefine
   return ws === undefined ? undefined : linearUrl({ linear_workspace: ws }, key);
 }
 
-/** "PROP-42" as a link when we know the workspace, otherwise as plain text. */
+/** "ENG-42" as a link when we know the workspace, otherwise as plain text. */
 function linearText(key: string, ws: string | undefined): string {
   return link(issueUrl(key, ws) ?? "", escapeHtml(key));
 }

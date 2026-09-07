@@ -13,7 +13,7 @@ export type DeployMode = "auto" | "manual";
 export interface RepoConfig {
   owner: string;
   name: string;
-  /** Branch that auto-deploys to the dev environment. May equal prod_branch (e.g. tenant app). */
+  /** Branch that auto-deploys to the dev environment. May equal prod_branch (e.g. mobile app). */
   dev_branch: string;
   /** Branch that ships to production. */
   prod_branch: string;

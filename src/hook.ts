@@ -253,7 +253,7 @@ export function runSessionStart(input: HookInput, deps: HookDeps): string | unde
 }
 
 /**
- * "  forgotten: sample-feature (API 2 unpushed, 1d ago) · agent-analytics (API 1 unpushed, 3d ago)"
+ * "  forgotten: sample-feature (API 2 unpushed, 1d ago) · usage-reports (API 1 unpushed, 3d ago)"
  * — one line for all of it, so the digest still fits in ten.
  */
 function forgottenLine(views: WorktreeView[]): string[] {
@@ -304,7 +304,7 @@ function localState(v: WorktreeView): string {
   return parts.join(", ") || "local changes";
 }
 
-/** "API#268 (2 threads) · tenants#3 (1 thread)" — the PRs holding the item here. */
+/** "API#268 (2 threads) · mobile#3 (1 thread)" — the PRs holding the item here. */
 function attentionPrs(v: ItemView): string {
   if (v.stage === "blocked") return clip(v.item.blocked_reason ?? "", 50);
   const driving = v.prs.filter((p) => p.stage === v.stage || prActions(p).some((a) => a.actor === "agent"));

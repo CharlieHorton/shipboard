@@ -31,9 +31,9 @@ const API: RepoConfig = {
   prod_branch: "main",
   deploy: "manual",
 };
-const TENANTS: RepoConfig = {
+const MOBILE: RepoConfig = {
   owner: "example",
-  name: "tenants",
+  name: "mobile",
   dev_branch: "main",
   prod_branch: "main",
   deploy: "manual",
@@ -42,7 +42,7 @@ const TENANTS: RepoConfig = {
 const CFG: Config = {
   gating_bots: GATING,
   ignored_authors: ["dependabot"],
-  projects: [{ name: "example", repos: [API, TENANTS] }],
+  projects: [{ name: "example", repos: [API, MOBILE] }],
 };
 
 /** A minimal open PR node; override anything. */
@@ -455,9 +455,9 @@ describe("reachability", () => {
     const gh = new FakeGithub({ merged: [mergedNode(12, "sha12", { baseRefName: "main" })] });
     gh.compares.set("main...sha12", 0);
 
-    await syncRepo(db, TENANTS, CFG, gh);
+    await syncRepo(db, MOBILE, CFG, gh);
     expect(gh.compareCalls).toEqual(["main...sha12"]);
-    expect(prRow("example/tenants", 12)).toMatchObject({ on_dev: 1, on_prod: 1, in_release_pr: null });
+    expect(prRow("example/mobile", 12)).toMatchObject({ on_dev: 1, on_prod: 1, in_release_pr: null });
   });
 
   it("stops paying for compares once on_prod is set", async () => {
@@ -509,7 +509,7 @@ describe("syncAll", () => {
     };
 
     const results = await syncAll(db, CFG, { client: failing });
-    expect(results.map((r) => r.repo)).toEqual(["example/API", "example/tenants"]);
+    expect(results.map((r) => r.repo)).toEqual(["example/API", "example/mobile"]);
     expect(results[0]?.errors).toEqual([]);
     expect(results[0]?.prs_seen).toBe(1);
     expect(results[1]?.errors).toEqual(["fetch PRs: boom"]);
@@ -525,9 +525,9 @@ describe("syncAll", () => {
 
 // ---------- OTA (Expo EAS) deploys ----------
 
-/** The tenant app as it is really configured: one branch, plus OTA updates. */
-const TENANTS_OTA: RepoConfig = { ...TENANTS, eas: { cwd: "/checkout", branch: "production" } };
-const TENANTS_KEY = "example/tenants";
+/** The mobile app as it is really configured: one branch, plus OTA updates. */
+const MOBILE_OTA: RepoConfig = { ...MOBILE, eas: { cwd: "/checkout", branch: "production" } };
+const MOBILE_KEY = "example/mobile";
 
 class FakeEas implements EasClient {
   listCalls = 0;
@@ -563,34 +563,34 @@ function otaCompares(gh: FakeGithub): string[] {
 describe("OTA deploys", () => {
   const MERGE_SHA = "bfc4863e";
 
-  function tenantGh(): FakeGithub {
+  function mobileGh(): FakeGithub {
     const gh = new FakeGithub({ merged: [mergedNode(5, MERGE_SHA, { baseRefName: "main" })] });
     gh.compares.set(`main...${MERGE_SHA}`, 0);
     return gh;
   }
 
   it("does not invent a first deployment when an older update compare fails", async () => {
-    const gh = tenantGh();
+    const gh = mobileGh();
     const eas = new FakeEas().add("g-old", "ota1", "2026-08-20T16:38:54.643Z")
       .add("g-new", "ota2", "2026-08-27T09:00:00.000Z");
     gh.compares.set(`ota2...${MERGE_SHA}`, 0);
-    const result = await syncRepo(db, TENANTS_OTA, CFG, gh, eas);
+    const result = await syncRepo(db, MOBILE_OTA, CFG, gh, eas);
     expect(result.errors).toContain(`compare ota1...${MERGE_SHA.slice(0, 7)}: gh: Not Found (HTTP 404)`);
-    expect(prRow(TENANTS_KEY, 5)).toMatchObject({ deployed_at: null, deploy_ref: null });
+    expect(prRow(MOBILE_KEY, 5)).toMatchObject({ deployed_at: null, deploy_ref: null });
   });
 
   it("marks the PR deployed by the OLDEST update that contains its merge commit", async () => {
-    const gh = tenantGh();
+    const gh = mobileGh();
     const eas = new FakeEas()
       .add("g-old", "ota1", "2026-08-20T16:38:54.643Z", "android")
       .add("g-new", "ota2", "2026-08-27T09:00:00.000Z");
     gh.compares.set(`ota1...${MERGE_SHA}`, 0);
     gh.compares.set(`ota2...${MERGE_SHA}`, 0);
 
-    const res = await syncRepo(db, TENANTS_OTA, CFG, gh, eas);
+    const res = await syncRepo(db, MOBILE_OTA, CFG, gh, eas);
     expect(res.errors).toEqual([]);
     expect(eas.listCalls).toBe(1);
-    expect(prRow(TENANTS_KEY, 5)).toMatchObject({
+    expect(prRow(MOBILE_KEY, 5)).toMatchObject({
       deployed_at: "2026-08-20T16:38:54.643Z",
       deploy_ref: "g-old",
       on_prod: 1,
@@ -600,69 +600,69 @@ describe("OTA deploys", () => {
   });
 
   it("stops after one compare when the newest update does not contain the merge commit", async () => {
-    const gh = tenantGh();
+    const gh = mobileGh();
     const eas = new FakeEas()
       .add("g-old", "ota1", "2026-08-20T16:38:54.643Z")
       .add("g-new", "ota2", "2026-08-27T09:00:00.000Z");
     gh.compares.set(`ota1...${MERGE_SHA}`, 0); // never asked
     gh.compares.set(`ota2...${MERGE_SHA}`, 3);
 
-    await syncRepo(db, TENANTS_OTA, CFG, gh, eas);
-    expect(prRow(TENANTS_KEY, 5)).toMatchObject({ deployed_at: null, deploy_ref: null });
+    await syncRepo(db, MOBILE_OTA, CFG, gh, eas);
+    expect(prRow(MOBILE_KEY, 5)).toMatchObject({ deployed_at: null, deploy_ref: null });
     expect(otaCompares(gh)).toEqual([`ota2...${MERGE_SHA}`]);
   });
 
   it("takes the newest update when the one before it predates the merge", async () => {
-    const gh = tenantGh();
+    const gh = mobileGh();
     const eas = new FakeEas()
       .add("g-old", "ota1", "2026-08-20T16:38:54.643Z")
       .add("g-new", "ota2", "2026-08-27T09:00:00.000Z");
     gh.compares.set(`ota1...${MERGE_SHA}`, 4);
     gh.compares.set(`ota2...${MERGE_SHA}`, 0);
 
-    await syncRepo(db, TENANTS_OTA, CFG, gh, eas);
-    expect(prRow(TENANTS_KEY, 5)).toMatchObject({
+    await syncRepo(db, MOBILE_OTA, CFG, gh, eas);
+    expect(prRow(MOBILE_KEY, 5)).toMatchObject({
       deployed_at: "2026-08-27T09:00:00.000Z",
       deploy_ref: "g-new",
     });
   });
 
   it("keeps a stored deploy even when the OTA cache no longer explains it", async () => {
-    const gh = tenantGh();
+    const gh = mobileGh();
     const eas = new FakeEas().add("g-old", "ota1", "2026-08-20T16:38:54.643Z");
     gh.compares.set(`ota1...${MERGE_SHA}`, 0);
-    await syncRepo(db, TENANTS_OTA, CFG, gh, eas);
+    await syncRepo(db, MOBILE_OTA, CFG, gh, eas);
     gh.compareCalls = [];
     db.prepare(`DELETE FROM ota_updates`).run();
 
-    const res = await syncRepo(db, TENANTS_OTA, CFG, gh, new FakeEas());
+    const res = await syncRepo(db, MOBILE_OTA, CFG, gh, new FakeEas());
     expect(res.changes).toEqual([]);
     expect(gh.compareCalls).toEqual([]); // once shipped, nothing is recomputed
-    expect(prRow(TENANTS_KEY, 5)).toMatchObject({
+    expect(prRow(MOBILE_KEY, 5)).toMatchObject({
       deployed_at: "2026-08-20T16:38:54.643Z",
       deploy_ref: "g-old",
     });
   });
 
   it("writes a shipped event when deployed_at flips from null", async () => {
-    const gh = tenantGh();
-    await syncRepo(db, TENANTS_OTA, CFG, gh, new FakeEas());
-    const itemId = linkItem(TENANTS_KEY, 5);
+    const gh = mobileGh();
+    await syncRepo(db, MOBILE_OTA, CFG, gh, new FakeEas());
+    const itemId = linkItem(MOBILE_KEY, 5);
 
     const eas = new FakeEas().add("g-old", "ota1", "2026-08-20T16:38:54.643Z");
     gh.compares.set(`ota1...${MERGE_SHA}`, 0);
-    const res = await syncRepo(db, TENANTS_OTA, CFG, gh, eas);
+    const res = await syncRepo(db, MOBILE_OTA, CFG, gh, eas);
 
     expect(res.changes).toEqual([
-      { repo: TENANTS_KEY, number: 5, field: "deployed_at", from: null, to: "2026-08-20T16:38:54.643Z" },
+      { repo: MOBILE_KEY, number: 5, field: "deployed_at", from: null, to: "2026-08-20T16:38:54.643Z" },
     ]);
     expect(eventTexts(itemId)).toEqual([
-      "PR example/tenants#5 shipped via OTA production (android, ios)",
+      "PR example/mobile#5 shipped via OTA production (android, ios)",
     ]);
   });
 
   it("only considers updates on the configured EAS branch", async () => {
-    const gh = tenantGh();
+    const gh = mobileGh();
     const eas = new FakeEas().add("g-prod", "ota1", "2026-08-20T16:38:54.643Z");
     // "main" also receives an OTA update on every push; it is not a prod deploy.
     eas.groups.unshift({ group: "g-main", branch: "main", message: "push", platforms: "android", isRollBackToEmbedded: false });
@@ -670,29 +670,29 @@ describe("OTA deploys", () => {
     gh.compares.set(`ota1...${MERGE_SHA}`, 0);
     gh.compares.set(`otaM...${MERGE_SHA}`, 0);
 
-    await syncRepo(db, TENANTS_OTA, CFG, gh, eas);
+    await syncRepo(db, MOBILE_OTA, CFG, gh, eas);
     expect(eas.viewCalls).toEqual(["g-prod"]);
-    expect(prRow(TENANTS_KEY, 5)).toMatchObject({ deploy_ref: "g-prod" });
+    expect(prRow(MOBILE_KEY, 5)).toMatchObject({ deploy_ref: "g-prod" });
   });
 
   it("does not look for a deploy for an unmerged PR", async () => {
     const gh = new FakeGithub({ open: [node({ number: 6, baseRefName: "main" })] });
     const eas = new FakeEas().add("g-old", "ota1", "2026-08-20T16:38:54.643Z");
 
-    await syncRepo(db, TENANTS_OTA, CFG, gh, eas);
+    await syncRepo(db, MOBILE_OTA, CFG, gh, eas);
     expect(gh.compareCalls).toEqual([]);
-    expect(prRow(TENANTS_KEY, 6)).toMatchObject({ deployed_at: null, deploy_ref: null });
+    expect(prRow(MOBILE_KEY, 6)).toMatchObject({ deployed_at: null, deploy_ref: null });
   });
 
   it("reports an eas failure under an `eas:` prefix and syncs the rest", async () => {
-    const gh = tenantGh();
+    const gh = mobileGh();
     const eas = new FakeEas();
     eas.failList = "eas update:list: not logged in";
 
-    const res = await syncRepo(db, TENANTS_OTA, CFG, gh, eas);
+    const res = await syncRepo(db, MOBILE_OTA, CFG, gh, eas);
     expect(res.errors).toEqual(["eas: update:list production: eas update:list: not logged in"]);
     expect(res.prs_seen).toBe(1);
-    expect(prRow(TENANTS_KEY, 5)).toMatchObject({ on_prod: 1, deployed_at: null });
+    expect(prRow(MOBILE_KEY, 5)).toMatchObject({ on_prod: 1, deployed_at: null });
   });
 
   it("never touches eas for a repo without an eas config", async () => {

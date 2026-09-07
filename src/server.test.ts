@@ -9,7 +9,7 @@ import * as store from "./store.js";
 import type { Config, ItemRow, PrRow } from "./types.js";
 
 const API = "example/API";
-const TITLE = "Chinese translations";
+const TITLE = "Dark mode preference";
 
 // HTTP tests never invoke Git. The removal module has separate fake-Git tests.
 vi.mock("./worktree-removal.js", async (importOriginal) => {
@@ -36,7 +36,7 @@ function insertPr(p: Partial<PrRow> & { repo: string; number: number }): void {
     title: "PR",
     author: "example",
     url: "",
-    head_branch: "feature/chinese",
+    head_branch: "feature/dark-mode",
     base_branch: "develop",
     head_sha: "aaaaaaa",
     state: "OPEN",

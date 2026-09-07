@@ -150,27 +150,27 @@ it("offers next actions and a resume briefing without changing cached data", asy
 
 it("creates an item and reads it back", async () => {
   const created = await json<ItemJson>("shipboard_upsert_item", {
-    title: "Chinese localisation",
-    summary: "zh-CN strings across API and web.",
-    changes: ["adds locale files", "wires the picker"],
+    title: "Dark theme support",
+    summary: "Dark theme tokens across API and web.",
+    changes: ["adds theme tokens", "wires the picker"],
   });
   expect(created.id).toBe(1);
   expect(created.stage).toBe("drafting");
-  expect(created.changes).toEqual(["adds locale files", "wires the picker"]);
+  expect(created.changes).toEqual(["adds theme tokens", "wires the picker"]);
 
   const got = await json<ItemJson & { tasks: unknown[]; events: { source: string; text: string }[] }>(
     "shipboard_get",
     { item_id: 1 },
   );
-  expect(got.title).toBe("Chinese localisation");
-  expect(got.events.map((e) => [e.source, e.text])).toEqual([["mcp", 'created item "Chinese localisation"']]);
+  expect(got.title).toBe("Dark theme support");
+  expect(got.events.map((e) => [e.source, e.text])).toEqual([["mcp", 'created item "Dark theme support"']]);
 
   const sections = await json<{ items: ItemJson[] }>("shipboard_list");
   expect(sections.items.map((i) => i.id)).toEqual([1]);
 });
 
 it("edits an item and records what changed", async () => {
-  await json("shipboard_upsert_item", { title: "Stripe Connect" });
+  await json("shipboard_upsert_item", { title: "Saved searches" });
   const updated = await json<ItemJson>("shipboard_upsert_item", {
     item_id: 1,
     summary: "Onboarding flow.",
@@ -184,8 +184,8 @@ it("edits an item and records what changed", async () => {
 });
 
 it("links a PR that is already in the store", async () => {
-  insertPr(API, 305, "feature/chinese");
-  await json("shipboard_upsert_item", { title: "Chinese localisation" });
+  insertPr(API, 305, "feature/dark-mode");
+  await json("shipboard_upsert_item", { title: "Dark theme support" });
 
   const linked = await json<ItemJson>("shipboard_link_pr", { item_id: 1, repo: API, number: 305 });
   expect(linked.prs.map((p) => `${p.repo}#${p.number}`)).toEqual([`${API}#305`]);
@@ -194,14 +194,14 @@ it("links a PR that is already in the store", async () => {
   const byBranch = await json<ItemJson>("shipboard_link_pr", {
     item_id: 1,
     repo: API,
-    branch: "feature/chinese",
+    branch: "feature/dark-mode",
   });
   expect(byBranch.prs).toHaveLength(1);
 });
 
 it("rejects a link without exactly one of number/branch", async () => {
-  insertPr(API, 305, "feature/chinese");
-  await json("shipboard_upsert_item", { title: "Chinese localisation" });
+  insertPr(API, 305, "feature/dark-mode");
+  await json("shipboard_upsert_item", { title: "Dark theme support" });
 
   expect((await call("shipboard_link_pr", { item_id: 1, repo: API })).text).toMatch(/exactly one/);
   const both = await call("shipboard_link_pr", { item_id: 1, repo: API, number: 305, branch: "x" });
@@ -212,12 +212,12 @@ it("rejects a link without exactly one of number/branch", async () => {
 });
 
 it("sets and clears tracker-owned fields", async () => {
-  await json("shipboard_upsert_item", { title: "Stripe Connect" });
+  await json("shipboard_upsert_item", { title: "Saved searches" });
 
   const blocked = await json<ItemJson>("shipboard_set", {
     item_id: 1,
     stage_override: "needs-testing",
-    blocked_reason: "waiting on Stripe keys",
+    blocked_reason: "waiting on search index",
     prod_deployed: true,
   });
   // blocked_reason outranks the override in the derived stage.
@@ -243,7 +243,7 @@ it("sets and clears tracker-owned fields", async () => {
 });
 
 it("adds and completes tasks", async () => {
-  await json("shipboard_upsert_item", { title: "Stripe Connect" });
+  await json("shipboard_upsert_item", { title: "Saved searches" });
   const task = await json<{ id: number; kind: string; done_at: string | null }>("shipboard_add_task", {
     item_id: 1,
     kind: "test",
@@ -265,7 +265,7 @@ it("adds and completes tasks", async () => {
 });
 
 it("notes on the timeline", async () => {
-  await json("shipboard_upsert_item", { title: "Stripe Connect" });
+  await json("shipboard_upsert_item", { title: "Saved searches" });
   const event = await json<{ item_id: number; source: string; text: string }>("shipboard_note", {
     item_id: 1,
     text: "deployed the API first on purpose",
@@ -274,12 +274,12 @@ it("notes on the timeline", async () => {
 });
 
 it("looks a branch up, hit and miss", async () => {
-  insertPr(API, 305, "feature/chinese");
-  await json("shipboard_upsert_item", { title: "Chinese localisation" });
+  insertPr(API, 305, "feature/dark-mode");
+  await json("shipboard_upsert_item", { title: "Dark theme support" });
   await json("shipboard_link_pr", { item_id: 1, repo: API, number: 305 });
 
   const hit = await json<{ pr: { number: number } | null; item: ItemJson | null }>("shipboard_lookup_branch", {
-    branch: "feature/chinese",
+    branch: "feature/dark-mode",
     repo: API,
   });
   expect(hit.pr?.number).toBe(305);
@@ -297,7 +297,7 @@ it("looks a branch up, hit and miss", async () => {
   );
   expect(unlinked.item).toBeNull();
 
-  expect((await call("shipboard_lookup_branch", { branch: "feature/chinese" })).isError).toBe(true);
+  expect((await call("shipboard_lookup_branch", { branch: "feature/dark-mode" })).isError).toBe(true);
 });
 
 it("reports unknown items as tool errors, not exceptions", async () => {

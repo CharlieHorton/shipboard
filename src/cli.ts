@@ -146,7 +146,7 @@ function renderItems(views: ItemView[]): string[] {
   return table(rows);
 }
 
-/** "API#237 chinese → develop  needs-addressing(3) round 1  ci ✓" */
+/** "API#237 dark-mode → develop  needs-addressing(3) round 1  ci ✓" */
 function renderPrLines(views: PrView[]): string[] {
   const rows = views.map((v) => {
     const threads = v.pr.unresolved_bot_threads > 0 ? `(${v.pr.unresolved_bot_threads})` : "";
@@ -448,7 +448,7 @@ itemCmd
   .option("--change <text>", "a 'what changed' bullet (repeatable)", collectValue, [])
   .option("--order <repos>", "required merge order, e.g. owner/a,owner/b")
   .option("--linear <key>", "Linear issue key")
-  .option("--silo <name>", "worktree silo directory, e.g. crm-signup-link")
+  .option("--silo <name>", "worktree silo directory, e.g. share-links")
   .action(
     (opts: {
       project?: string;
@@ -577,7 +577,7 @@ program
   .option("--summary <text>", "replace the summary")
   .option("--title <text>", "replace the title")
   .option("--linear <key>", "set the Linear issue key")
-  .option("--silo <name>", "worktree silo directory, e.g. crm-signup-link")
+  .option("--silo <name>", "worktree silo directory, e.g. share-links")
   .action(
     (
       rawId: string,

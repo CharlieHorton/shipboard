@@ -178,7 +178,8 @@ npm run build
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and
-[docs/design.md](docs/design.md) for architecture and design history.
+[docs/design.md](docs/design.md) for architecture and design history. Release
+notes live in [CHANGELOG.md](CHANGELOG.md).
 Rebuild after pulling updates; the CLI, hooks, and MCP server run from `dist/`.
 
 [MIT licensed](LICENSE).
